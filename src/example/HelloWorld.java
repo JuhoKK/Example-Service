@@ -14,7 +14,7 @@ public class HelloWorld {
 
   public static void main(String[] argv) {
     Object implementor = new HelloWorld ();
-    String address = "http://localhost:9000/HelloWorld";
+    String address = "http://test-app-wildfly-testgames.apps.us-east-2.online-starter.openshift.com/HelloWorld";
     Endpoint.publish(address, implementor);
   }
 }
