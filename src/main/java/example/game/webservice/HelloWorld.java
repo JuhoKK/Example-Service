@@ -16,6 +16,8 @@
  */
 package main.java.example.game.webservice;
 
+import main.java.example.game.mongodb.DBService;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -49,11 +51,10 @@ public class HelloWorld {
     }
 
     @GET
-    @Path("/url")
+    @Path("/FETCH")
     @Produces({ "application/json" })
-    public String getUrl() {
-        String sysEnvStr = System.getenv("MONGODB_ADDRESS");
-        return "{\"result\":\"" + sysEnvStr + "\"}";
+    public String getFetch() {
+        return new DBService().fetch().toString();
     }
 
 }
