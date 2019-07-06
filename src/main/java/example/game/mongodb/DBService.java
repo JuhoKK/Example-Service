@@ -12,7 +12,7 @@ public class DBService {
         JSONArray jsonArray = new JSONArray();
         MongoDatabase database = DBSingleton.getInstance().databaseInstance;
         MongoCollection<Document> mongoCollection = database.getCollection(EnvironmentVariables.getMongoDBUCollection());
-        MongoCursor<Document> cursor = mongoCollection.find().limit(100).iterator();
+        MongoCursor<Document> cursor = mongoCollection.find().limit(1).iterator();
 
         while (cursor.hasNext()) {
             Document obj = cursor.next();
