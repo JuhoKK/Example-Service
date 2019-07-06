@@ -27,8 +27,8 @@ public class DBService {
         JSONArray jsonArray = new JSONArray();
         MongoDatabase database = DBSingleton.getInstance().databaseInstance;
         MongoCollection<Document> mongoCollection = database.getCollection(EnvironmentVariables.getMongoDBUCollection());
-        MongoCursor<Document> cursor = mongoCollection.find().projection(Projections.include(
-                "name", "market", "rank")).sort(new BasicDBObject("market", market)).limit(limit).iterator();
+        MongoCursor<Document> cursor = mongoCollection.find(new BasicDBObject("market", market))
+                .projection(Projections.include("name", "market", "rank")).limit(limit).iterator();
 
         while (cursor.hasNext()) {
             Document obj = cursor.next();
