@@ -51,7 +51,7 @@ public class HelloWorld {
     }
 
     @GET
-    @Path("/FETCH")
+    @Path("/fetch")
     @Produces({ "application/json" })
     public String getFetch() {
         return new DBService().fetchTopMarket(1, "fi", 10).toString();
