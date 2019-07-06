@@ -48,4 +48,12 @@ public class HelloWorld {
         return "<xml><result>" + helloService.createHelloMessage("World") + "</result></xml>";
     }
 
+    @GET
+    @Path("/url")
+    @Produces({ "application/json" })
+    public String getUrl() {
+        String sysEnvStr = System.getenv("MONGODB_ADDRESS");
+        return "{\"result\":\"" + sysEnvStr + "\"}";
+    }
+
 }
