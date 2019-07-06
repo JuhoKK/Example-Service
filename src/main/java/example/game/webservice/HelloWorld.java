@@ -51,7 +51,7 @@ public class HelloWorld {
     @GET
     @Path("/top")
     @Produces({ "application/json" })
-    public String getTopGamesForMarket(@QueryParam("rank") final Integer rank, @QueryParam("rank") final String market) {
+    public String getTopGamesForMarket(@QueryParam("rank") final Integer rank, @QueryParam("market") final String market) {
         if(rank == 0 || market == null) {
             return ""; // Should probably change return value type to response and return 400 status code instead
         }
