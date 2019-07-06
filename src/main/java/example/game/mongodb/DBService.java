@@ -23,7 +23,7 @@ public class DBService {
         return jsonArray;
     }
 
-    public JSONArray fetchTopMarket(int rank, String market, int limit) {
+    public JSONArray fetchTopMarket(int rank, String market) {
         JSONArray jsonArray = new JSONArray();
         MongoDatabase database = DBSingleton.getInstance().databaseInstance;
         MongoCollection<Document> mongoCollection = database.getCollection(EnvironmentVariables.getMongoDBUCollection());
@@ -31,7 +31,7 @@ public class DBService {
         searchObject.put("market", market);
         searchObject.put("rank", new BasicDBObject("$lt", rank + 1));
         MongoCursor<Document> cursor = mongoCollection.find(searchObject)
-                .projection(Projections.include("name", "market", "rank")).limit(limit).iterator();
+                .projection(Projections.include("name", "market", "rank")).iterator();
 
         while (cursor.hasNext()) {
             Document obj = cursor.next();
