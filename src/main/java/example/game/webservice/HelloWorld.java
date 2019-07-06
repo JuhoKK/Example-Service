@@ -19,9 +19,7 @@ package main.java.example.game.webservice;
 import main.java.example.game.mongodb.DBService;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 /**
  * A simple REST service which is able to say hello to someone using HelloService Please take a look at the web.xml where JAX-RS
@@ -51,10 +49,13 @@ public class HelloWorld {
     }
 
     @GET
-    @Path("/fetch")
+    @Path("/top")
     @Produces({ "application/json" })
-    public String getFetch() {
-        return new DBService().fetchTopMarket(1, "fi", 10).toString();
+    public String getTopGamesForMarket(@QueryParam("rank") final Integer rank, @QueryParam("rank") final String market) {
+        if(rank == 0 || market == null) {
+            return ""; // Should probably change return value type to response and return 400 status code instead
+        }
+        return new DBService().fetchTopMarket(rank, market).toString();
     }
 
 }
