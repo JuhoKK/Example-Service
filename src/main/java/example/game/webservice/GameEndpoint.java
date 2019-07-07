@@ -19,8 +19,10 @@ package main.java.example.game.webservice;
 import com.amazonaws.util.json.JSONArray;
 import main.java.example.game.mongodb.DBService;
 
-import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
  * A simple REST service which is able to say hello to someone using HelloService Please take a look at the web.xml where JAX-RS
@@ -35,71 +37,74 @@ public class GameEndpoint {
 
     @GET
     @Path("/top/today/{market}/{rank}")
-    @Produces({ "application/json" })
-    public String getTopGamesForMarketToday(@PathParam("rank") final Integer rank, @PathParam("market") final String market, @QueryParam("fields") final String fields) {
+    public Response getTopGamesForMarketToday(@PathParam("rank") final Integer rank, @PathParam("market") final String market, @QueryParam("fields") final String fields) {
         if(rank == 0 || market == null || fields == null) {
-            return ""; // Should probably change return value type to response and return 400 status code instead
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
         JSONArray jsonArray = new DBService().fetchTopTodayMarket(rank, market, fields);
-        return jsonArray != null ? jsonArray.toString() : "";
+        return Response.status(Response.Status.OK).type(APPLICATION_JSON).entity(jsonArray.toString()).build();
     }
 
     @GET
     @Path("/top/yesterday/{market}/{rank}")
-    @Produces({ "application/json" })
-    public String getTopGamesForMarketYesterday(@PathParam("rank") final Integer rank, @PathParam("market") final String market, @QueryParam("fields") final String fields) {
+    public Response getTopGamesForMarketYesterday(@PathParam("rank") final Integer rank, @PathParam("market") final String market, @QueryParam("fields") final String fields) {
         if(rank == 0 || market == null || fields == null) {
-            return ""; // Should probably change return value type to response and return 400 status code instead
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
         JSONArray jsonArray = new DBService().fetchTopYesterdayMarket(rank, market, fields);
-        return jsonArray != null ? jsonArray.toString() : "";
+        return Response.status(Response.Status.OK).type(APPLICATION_JSON).entity(jsonArray.toString()).build();
     }
 
     // This should use id instead of name for parameter but for ease of reading we are using name in this example
     @GET
     @Path("/game/{market}/{name}")
-    @Produces({ "application/json" })
-    public String getGameForMarket(@PathParam("market") final String market, @PathParam("name") final String name, @QueryParam("fields") final String fields) {
+    public Response getGameForMarket(@PathParam("market") final String market, @PathParam("name") final String name, @QueryParam("fields") final String fields) {
         if(name == null || market == null || fields == null) {
-            return ""; // Should probably change return value type to response and return 400 status code instead
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
         JSONArray jsonArray = new DBService().fetchGameFromMarket(name, market, fields);
-        return jsonArray != null ? jsonArray.toString() : "";
+        return Response.status(Response.Status.OK).type(APPLICATION_JSON).entity(jsonArray.toString()).build();
     }
 
     @GET
     @Path("/date/ranked/{market}/{rank}/{days}")
-    @Produces({ "application/json" })
-    public String getGamesEnteredRank(@PathParam("market") final String market, @PathParam("rank") final int rank, @PathParam("days") final int days, @QueryParam("fields") final String fields) {
+    public Response getGamesEnteredRank(@PathParam("market") final String market, @PathParam("rank") final int rank, @PathParam("days") final int days, @QueryParam("fields") final String fields) {
         if(rank == 0 || market == null || fields == null) {
-            return ""; // Should probably change return value type to response and return 400 status code instead
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
         JSONArray jsonArray = new DBService().fetchGamesEnteredRankFromMarket(rank, market, days, fields);
-        return jsonArray != null ? jsonArray.toString() : "";
+        return Response.status(Response.Status.OK).type(APPLICATION_JSON).entity(jsonArray.toString()).build();
     }
 
     @POST
     @Path("/game/{market}/{name}/favorite/add")
-    public String addToFavorites(@PathParam("market") final String market, @PathParam("name") final String name) {
+    public Response addToFavorites(@PathParam("market") final String market, @PathParam("name") final String name) {
         if(name == null || market == null) {
-            return ""; // Should probably change return value type to response and return 400 status code instead
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
         DBService dbService = new DBService();
-        dbService.changeFavorite(name, market, true);
-        return dbService.fetchGameFromMarket(name, market, "name,favorite").toString();
+        boolean success = dbService.changeFavorite(name, market, true);
+        if(!success) {
+            return Response.status(Response.Status.NOT_MODIFIED).build();
+        }
+        return Response.status(Response.Status.OK).type(APPLICATION_JSON).entity(
+                dbService.fetchGameFromMarket(name, market, "name,favorite").toString()
+        ).build();
     }
 
     @POST
     @Path("/game/{market}/{name}/favorite/remove")
-    public String removeFromFavorites(@PathParam("market") final String market, @PathParam("name") final String name) {
+    public Response removeFromFavorites(@PathParam("market") final String market, @PathParam("name") final String name) {
         if(name == null || market == null) {
-            return ""; // Should probably change return value type to response and return 400 status code instead
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
         DBService dbService = new DBService();
         boolean success = dbService.changeFavorite(name, market, false);
         if(!success) {
-            return "Something went wrong";
+            return Response.status(Response.Status.NOT_MODIFIED).build();
         }
-        return dbService.fetchGameFromMarket(name, market, "name,favorite").toString();
+        return Response.status(Response.Status.OK).type(APPLICATION_JSON).entity(
+                dbService.fetchGameFromMarket(name, market, "name,favorite").toString()
+        ).build();
     }
 }
