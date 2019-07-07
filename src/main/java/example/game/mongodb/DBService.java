@@ -79,7 +79,7 @@ public class DBService {
     }
 
     /**
-     * Fetches games who have entered specified rank in give past days
+     * Fetches games which have entered specified rank in give past days
      *
      * @param rank Rank which game should have entered
      * @param market Market area we search
