@@ -16,6 +16,7 @@
  */
 package main.java.example.game.webservice;
 
+import com.amazonaws.util.json.JSONArray;
 import main.java.example.game.mongodb.DBService;
 
 import javax.inject.Inject;
@@ -49,13 +50,36 @@ public class HelloWorld {
     }
 
     @GET
-    @Path("/top")
+    @Path("/top/today/{market}/{rank}")
     @Produces({ "application/json" })
-    public String getTopGamesForMarket(@QueryParam("rank") final Integer rank, @QueryParam("market") final String market) {
-        if(rank == 0 || market == null) {
+    public String getTopGamesForMarketToday(@PathParam("rank") final Integer rank, @PathParam("market") final String market, @QueryParam("fields") final String fields) {
+        if(rank == 0 || market == null || fields == null) {
             return ""; // Should probably change return value type to response and return 400 status code instead
         }
-        return new DBService().fetchTopMarket(rank, market).toString();
+        JSONArray jsonArray = new DBService().fetchTopTodayMarket(rank, market, fields);
+        return jsonArray != null ? jsonArray.toString() : "";
     }
 
+    @GET
+    @Path("/top/yesterday/{market}/{rank}")
+    @Produces({ "application/json" })
+    public String getTopGamesForMarketYesterday(@PathParam("rank") final Integer rank, @PathParam("market") final String market, @QueryParam("fields") final String fields) {
+        if(rank == 0 || market == null || fields == null) {
+            return ""; // Should probably change return value type to response and return 400 status code instead
+        }
+        JSONArray jsonArray = new DBService().fetchTopYesterdayMarket(rank, market, fields);
+        return jsonArray != null ? jsonArray.toString() : "";
+    }
+
+    // This should use id instead of name for parameter but for ease of reading we are using name in this example
+    @GET
+    @Path("/game/{market}/{name}")
+    @Produces({ "application/json" })
+    public String getGameForMarket(@PathParam("market") final String market, @PathParam("name") final String name, @QueryParam("fields") final String fields) {
+        if(name == null || market == null || fields == null) {
+            return ""; // Should probably change return value type to response and return 400 status code instead
+        }
+        JSONArray jsonArray = new DBService().fetchGameFromMarket(name, market, fields);
+        return jsonArray != null ? jsonArray.toString() : "";
+    }
 }

@@ -22,14 +22,14 @@
 </head>
 <body>
 
-<p>Choose between <em>JSON</em> or <em>XML</em>:
+<p>Choose wisely:
 
 <ul>
-    <li><a href="rest/json">JSON</a></li>
-    <li><a href="rest/xml">XML</a></li>
-    <li><a href="rest/top?rank=20&market=fi">Top 20 Finland</a></li>
-    <li><a href="rest/top?rank=50&market=es">Top 50 Spain</a></li>
-    <li><a href="rest/top?rank=10&market=it">Top 10 Italy</a></li>
+    <li><a href="rest/top/today/fi/20?fields=name,market,rank">Top 20 Finland</a></li>
+    <li><a href="rest/top/yesterday/fi/20?fields=name,market,rank">Top 20 Yesterday Finland</a></li>
+    <li><a href="rest/top/today/es/50?fields=name,market,rank">Top 50 Spain</a></li>
+    <li><a href="rest/top/today/it/10?fields=name,rank">Top 10 Italy</a></li>
+    <li><a href="rest/game/fi/Clash%20of%20Clans?fields=name,rank,rankYesterday,rankWeek,rankMonth">Totally random game from random market</a></li>
 </ul>
 </body>
 </html>
