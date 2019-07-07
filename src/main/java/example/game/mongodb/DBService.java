@@ -14,19 +14,6 @@ import javax.ws.rs.NotFoundException;
 import java.util.*;
 
 public class DBService {
-    public JSONArray fetch() {
-        JSONArray jsonArray = new JSONArray();
-        MongoDatabase database = DBSingleton.getInstance().databaseInstance;
-        MongoCollection<Document> mongoCollection = database.getCollection(EnvironmentVariables.getMongoDBUCollection());
-        MongoCursor<Document> cursor = mongoCollection.find().limit(1).iterator();
-
-        while (cursor.hasNext()) {
-            Document obj = cursor.next();
-            jsonArray.put(obj.toJson());
-        }
-        return jsonArray;
-    }
-
     public JSONArray fetchTopTodayMarket(int rank, String market, String fields) {
         return fetchTopMarket("rank", rank, market, fields);
     }
