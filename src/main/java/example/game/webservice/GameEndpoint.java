@@ -55,6 +55,26 @@ public class GameEndpoint {
         return Response.status(Response.Status.OK).type(APPLICATION_JSON).entity(jsonArray.toString()).build();
     }
 
+    @GET
+    @Path("/top/week/{market}/{rank}")
+    public Response getTopGamesForMarketWeek(@PathParam("rank") final Integer rank, @PathParam("market") final String market, @QueryParam("fields") final String fields) {
+        if(rank == 0 || market == null || fields == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+        JSONArray jsonArray = new DBService().fetchTopWeekMarket(rank, market, fields);
+        return Response.status(Response.Status.OK).type(APPLICATION_JSON).entity(jsonArray.toString()).build();
+    }
+
+    @GET
+    @Path("/top/month/{market}/{rank}")
+    public Response getTopGamesForMarketMonth(@PathParam("rank") final Integer rank, @PathParam("market") final String market, @QueryParam("fields") final String fields) {
+        if(rank == 0 || market == null || fields == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+        JSONArray jsonArray = new DBService().fetchTopMonthMarket(rank, market, fields);
+        return Response.status(Response.Status.OK).type(APPLICATION_JSON).entity(jsonArray.toString()).build();
+    }
+
     // This should use id instead of name for parameter but for ease of reading we are using name in this example
     @GET
     @Path("/game/{market}/{name}")
