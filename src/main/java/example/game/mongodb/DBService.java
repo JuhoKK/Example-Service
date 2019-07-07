@@ -81,7 +81,7 @@ public class DBService {
         searchObject.put("market", market);
         searchObject.put("name", gameName);
 
-        BasicDBObject updateObject = new BasicDBObject("favorite", favorite);
+        BasicDBObject updateObject = new BasicDBObject("$set", new BasicDBObject("favorite", favorite));
 
         return updateObject(updateObject, searchObject);
     }
