@@ -10,6 +10,8 @@ import main.java.example.game.Utils.EnvironmentVariables;
 import org.bson.Document;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class DBService {
@@ -46,6 +48,33 @@ public class DBService {
         BasicDBObject searchObject = new BasicDBObject();
         searchObject.put("market", market);
         searchObject.put("name", gameName);
+        return fetchFiltered(searchObject, fields);
+    }
+
+    public JSONArray fetchGamesEnteredRankFromMarket(int rank, String market, int days, String fields) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, -24 * days);
+        Date date = calendar.getTime();
+        BasicDBObject searchObject = new BasicDBObject();
+        searchObject.put("market", market);
+        switch (rank) {
+            case 10:
+                searchObject.put("top10Entry", new BasicDBObject("$gt", date.getTime()));
+                break;
+            case 20:
+                searchObject.put("top20Entry", new BasicDBObject("$gt", date.getTime()));
+                break;
+            case 50:
+                searchObject.put("top50Entry", new BasicDBObject("$gt", date.getTime()));
+                break;
+            case 100:
+                searchObject.put("top100Entry", new BasicDBObject("$gt", date.getTime()));
+                break;
+            case 200:
+            default:
+                searchObject.put("top200Entry", new BasicDBObject("$gt", date.getTime()));
+                break;
+        }
         return fetchFiltered(searchObject, fields);
     }
 

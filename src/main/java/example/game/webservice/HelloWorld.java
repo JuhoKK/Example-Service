@@ -82,4 +82,15 @@ public class HelloWorld {
         JSONArray jsonArray = new DBService().fetchGameFromMarket(name, market, fields);
         return jsonArray != null ? jsonArray.toString() : "";
     }
+
+    @GET
+    @Path("/date/ranked/{market}/{rank}/{days}")
+    @Produces({ "application/json" })
+    public String getGamesEnteredRank(@PathParam("market") final String market, @PathParam("rank") final int rank, @PathParam("days") final int days, @QueryParam("fields") final String fields) {
+        if(rank == 0 || market == null || fields == null) {
+            return ""; // Should probably change return value type to response and return 400 status code instead
+        }
+        JSONArray jsonArray = new DBService().fetchGamesEnteredRankFromMarket(rank, market, days, fields);
+        return jsonArray != null ? jsonArray.toString() : "";
+    }
 }
