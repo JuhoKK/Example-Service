@@ -83,7 +83,7 @@ public class DBService {
 
         BasicDBObject updateObject = new BasicDBObject("favorite", favorite);
 
-        return updateObjects(updateObject, searchObject);
+        return updateObject(updateObject, searchObject);
     }
 
     private JSONArray fetchTopMarket(String timeRank, int rank, String market, String fields) {
@@ -113,7 +113,7 @@ public class DBService {
         return jsonArray;
     }
 
-    private boolean updateObjects(BasicDBObject updateObject, BasicDBObject searchObject) {
+    private boolean updateObject(BasicDBObject updateObject, BasicDBObject searchObject) {
         MongoDatabase database = DBSingleton.getInstance().databaseInstance;
         MongoCollection<Document> mongoCollection = database.getCollection(EnvironmentVariables.getMongoDBUCollection());
 
@@ -124,7 +124,7 @@ public class DBService {
             return false; // Game(s) didn't exist in DB
         }
 
-        UpdateResult result = mongoCollection.updateMany(searchObject, updateObject);
+        UpdateResult result = mongoCollection.updateOne(searchObject, updateObject);
 
         return result.getModifiedCount() > 0;
     }
