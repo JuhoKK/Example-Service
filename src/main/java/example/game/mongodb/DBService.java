@@ -10,6 +10,7 @@ import com.mongodb.client.result.UpdateResult;
 import main.java.example.game.Utils.EnvironmentVariables;
 import org.bson.Document;
 
+import javax.ws.rs.NotFoundException;
 import java.util.*;
 
 public class DBService {
@@ -76,14 +77,14 @@ public class DBService {
         return fetchFiltered(searchObject, fields);
     }
 
-    public boolean changeFavorite(String gameName, String market, boolean favorite) {
+    public boolean changeFavorite(String gameName, String market, boolean favorite) throws NotFoundException {
         BasicDBObject searchObject = new BasicDBObject();
         searchObject.put("market", market);
         searchObject.put("name", gameName);
 
         BasicDBObject updateObject = new BasicDBObject("$set", new BasicDBObject("favorite", favorite));
 
-        return updateObject(updateObject, searchObject);
+        return updateObject(searchObject, updateObject);
     }
 
     private JSONArray fetchTopMarket(String timeRank, int rank, String market, String fields) {
@@ -113,19 +114,15 @@ public class DBService {
         return jsonArray;
     }
 
-    private boolean updateObject(BasicDBObject updateObject, BasicDBObject searchObject) {
+    private boolean updateObject(BasicDBObject searchObject, BasicDBObject updateObject) throws NotFoundException {
         MongoDatabase database = DBSingleton.getInstance().databaseInstance;
         MongoCollection<Document> mongoCollection = database.getCollection(EnvironmentVariables.getMongoDBUCollection());
 
-        MongoCursor<Document> cursor = mongoCollection.find(searchObject)
-                .projection(Projections.include("name")).iterator();
-
-        if (!cursor.hasNext()) {
-            return false; // Game(s) didn't exist in DB
-        }
-
         UpdateResult result = mongoCollection.updateOne(searchObject, updateObject);
 
+        if(result.getMatchedCount() == 0) {
+            throw new NotFoundException("Did not find the specified game");
+        }
         return result.getModifiedCount() > 0;
     }
 }

@@ -83,9 +83,13 @@ public class GameEndpoint {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         DBService dbService = new DBService();
-        boolean success = dbService.changeFavorite(name, market, true);
-        if(!success) {
-            return Response.status(Response.Status.NOT_MODIFIED).build();
+        try {
+            boolean success = dbService.changeFavorite(name, market, true);
+            if(!success) {
+                return Response.status(Response.Status.NOT_MODIFIED).build();
+            }
+        } catch (NotFoundException ex) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.status(Response.Status.OK).type(APPLICATION_JSON).entity(
                 dbService.fetchGameFromMarket(name, market, "name,favorite").toString()
@@ -99,9 +103,13 @@ public class GameEndpoint {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         DBService dbService = new DBService();
-        boolean success = dbService.changeFavorite(name, market, false);
-        if(!success) {
-            return Response.status(Response.Status.NOT_MODIFIED).build();
+        try {
+            boolean success = dbService.changeFavorite(name, market, false);
+            if(!success) {
+                return Response.status(Response.Status.NOT_MODIFIED).build();
+            }
+        } catch (NotFoundException ex) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.status(Response.Status.OK).type(APPLICATION_JSON).entity(
                 dbService.fetchGameFromMarket(name, market, "name,favorite").toString()
