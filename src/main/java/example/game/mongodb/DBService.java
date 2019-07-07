@@ -14,22 +14,63 @@ import javax.ws.rs.NotFoundException;
 import java.util.*;
 
 public class DBService {
+
+    /**
+     * Fetches games from rank 1 to given rank from specified market
+     *
+     * @param rank Rank where we stop the search
+     * @param market Market area we search
+     * @param fields Fields we display in results
+     * @return JSON array
+     */
     public JSONArray fetchTopTodayMarket(int rank, String market, String fields) {
         return fetchTopMarket("rank", rank, market, fields);
     }
 
+    /**
+     * Fetches games from yesterday rank 1 to given rank from specified market
+     *
+     * @param rank Rank where we stop the search
+     * @param market Market area we search
+     * @param fields Fields we display in results
+     * @return JSON array
+     */
     public JSONArray fetchTopYesterdayMarket(int rank, String market, String fields) {
         return fetchTopMarket("rankYesterday", rank, market, fields);
     }
 
+    /**
+     * Fetches games from week rank 1 to given rank from specified market
+     *
+     * @param rank Rank where we stop the search
+     * @param market Market area we search
+     * @param fields Fields we display in results
+     * @return JSON array
+     */
     public JSONArray fetchTopWeekMarket(int rank, String market, String fields) {
         return fetchTopMarket("rankWeek", rank, market, fields);
     }
 
+    /**
+     * Fetches games from month rank 1 to given rank from specified market
+     *
+     * @param rank Rank where we stop the search
+     * @param market Market area we search
+     * @param fields Fields we display in results
+     * @return JSON array
+     */
     public JSONArray fetchTopMonthMarket(int rank, String market, String fields) {
         return fetchTopMarket("rankMonth", rank, market, fields);
     }
 
+    /**
+     * Fetches specified game
+     *
+     * @param gameName Name of the game we try to fetch
+     * @param market Market area we search
+     * @param fields Fields we display in results
+     * @return JSON array
+     */
     public JSONArray fetchGameFromMarket(String gameName, String market, String fields) {
         BasicDBObject searchObject = new BasicDBObject();
         searchObject.put("market", market);
@@ -37,6 +78,15 @@ public class DBService {
         return fetchFiltered(searchObject, fields);
     }
 
+    /**
+     * Fetches games who have entered specified rank in give past days
+     *
+     * @param rank Rank which game should have entered
+     * @param market Market area we search
+     * @param days Days since today
+     * @param fields Fields we display in results
+     * @return JSON array
+     */
     public JSONArray fetchGamesEnteredRankFromMarket(int rank, String market, int days, String fields) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR, -24 * days);
@@ -64,6 +114,15 @@ public class DBService {
         return fetchFiltered(searchObject, fields);
     }
 
+    /**
+     * Update favorite status of a given game
+     *
+     * @param gameName Name of the game we try to update
+     * @param market Market area we search
+     * @param favorite Status we should update to DB
+     * @return True if update succeeds
+     * @throws NotFoundException thrown if no game with specified name was found
+     */
     public boolean changeFavorite(String gameName, String market, boolean favorite) throws NotFoundException {
         BasicDBObject searchObject = new BasicDBObject();
         searchObject.put("market", market);

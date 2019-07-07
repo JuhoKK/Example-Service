@@ -25,7 +25,7 @@ public class DBSingleton {
     }
 
     /**
-     * @return Singleton DB instance
+     * @return Singleton instance
      */
     public static DBSingleton getInstance() {
         if(singleton == null) {
