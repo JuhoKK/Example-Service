@@ -6,13 +6,11 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.result.UpdateResult;
 import main.java.example.game.Utils.EnvironmentVariables;
 import org.bson.Document;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class DBService {
     public JSONArray fetch() {
@@ -78,6 +76,16 @@ public class DBService {
         return fetchFiltered(searchObject, fields);
     }
 
+    public boolean changeFavorite(String gameName, String market, boolean favorite) {
+        BasicDBObject searchObject = new BasicDBObject();
+        searchObject.put("market", market);
+        searchObject.put("name", gameName);
+
+        BasicDBObject updateObject = new BasicDBObject("favorite", favorite);
+
+        return updateObjects(updateObject, searchObject);
+    }
+
     private JSONArray fetchTopMarket(String timeRank, int rank, String market, String fields) {
         BasicDBObject searchObject = new BasicDBObject();
         searchObject.put("market", market);
@@ -103,5 +111,21 @@ public class DBService {
         }
 
         return jsonArray;
+    }
+
+    private boolean updateObjects(BasicDBObject updateObject, BasicDBObject searchObject) {
+        MongoDatabase database = DBSingleton.getInstance().databaseInstance;
+        MongoCollection<Document> mongoCollection = database.getCollection(EnvironmentVariables.getMongoDBUCollection());
+
+        MongoCursor<Document> cursor = mongoCollection.find(searchObject)
+                .projection(Projections.include("name")).iterator();
+
+        if (!cursor.hasNext()) {
+            return false; // Game(s) didn't exist in DB
+        }
+
+        UpdateResult result = mongoCollection.updateMany(searchObject, updateObject);
+
+        return result.getModifiedCount() > 0;
     }
 }

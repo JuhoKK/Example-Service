@@ -93,4 +93,29 @@ public class HelloWorld {
         JSONArray jsonArray = new DBService().fetchGamesEnteredRankFromMarket(rank, market, days, fields);
         return jsonArray != null ? jsonArray.toString() : "";
     }
+
+    @POST
+    @Path("/game/{market}/{name}/favorite/add")
+    public String addToFavorites(@PathParam("market") final String market, @PathParam("name") final String name) {
+        if(name == null || market == null) {
+            return ""; // Should probably change return value type to response and return 400 status code instead
+        }
+        DBService dbService = new DBService();
+        dbService.changeFavorite(name, market, true);
+        return dbService.fetchGameFromMarket(name, market, "name,favorite").toString();
+    }
+
+    @POST
+    @Path("/game/{market}/{name}/favorite/remove")
+    public String removeFromFavorites(@PathParam("market") final String market, @PathParam("name") final String name) {
+        if(name == null || market == null) {
+            return ""; // Should probably change return value type to response and return 400 status code instead
+        }
+        DBService dbService = new DBService();
+        boolean success = dbService.changeFavorite(name, market, false);
+        if(!success) {
+            return "Something went wrong";
+        }
+        return dbService.fetchGameFromMarket(name, market, "name,favorite").toString();
+    }
 }
