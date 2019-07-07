@@ -31,23 +31,7 @@ import javax.ws.rs.*;
  */
 
 @Path("/")
-public class HelloWorld {
-    @Inject
-    HelloService helloService;
-
-    @GET
-    @Path("/json")
-    @Produces({ "application/json" })
-    public String getHelloWorldJSON() {
-        return "{\"result\":\"" + helloService.createHelloMessage("World") + "\"}";
-    }
-
-    @GET
-    @Path("/xml")
-    @Produces({ "application/xml" })
-    public String getHelloWorldXML() {
-        return "<xml><result>" + helloService.createHelloMessage("World") + "</result></xml>";
-    }
+public class GameEndpoint {
 
     @GET
     @Path("/top/today/{market}/{rank}")
